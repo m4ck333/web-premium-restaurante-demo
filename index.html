@@ -16,6 +16,8 @@
   <!-- Fuentes no render-blocking: preload + swap a stylesheet onload (fallback noscript) -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500&display=swap"></noscript>
+  <!-- Progressive enhancement: sin JS el contenido .reveal debe ser visible (no depende de GSAP) -->
+  <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 
   <style>
     :root {
@@ -467,10 +469,10 @@
     </div>
   </footer>
 
-  <!-- Librerias (CDN) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <!-- Librerias (CDN) con Subresource Integrity: si el hash no coincide el navegador bloquea el script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js" integrity="sha384-li4UtcFCH6QeUqR4JyV58/VgTprMuz9aauj+oWtew7V4Y7ZVjnvz5px9Y3UCG0Ea" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -618,6 +620,14 @@
           });
         }
       }
+    }
+
+    // --- Fallback: si GSAP no carga (fallo o bloqueo SRI del CDN), mostrar el contenido igualmente ---
+    if (!window.gsap) {
+      document.querySelectorAll(".reveal").forEach((el) => {
+        el.style.opacity = "1";
+        el.style.transform = "none";
+      });
     }
 
     // --- Formulario de contacto: demo mode ---
