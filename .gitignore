@@ -1,0 +1,17 @@
+# dependencias
+node_modules/
+
+# entorno / secretos
+.env
+.env.*
+*.local
+
+# artefactos de build / herramientas
+.vercel/
+.lighthouseci/
+*-report.html
+*-report.json
+
+# sistema
+.DS_Store
+Thumbs.db

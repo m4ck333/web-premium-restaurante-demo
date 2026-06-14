@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brasa Norte — Brasa de autor en Gijon</title>
+  <meta name="description" content="Brasa de autor con producto de temporada en Gijon. Reserva mesa en Brasa Norte.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Brasa Norte">
+  <meta property="og:description" content="Brasa de autor con producto de temporada en Gijon.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --carbon: #0c0a09;
+      --carbon-2: #16120f;
+      --hueso: #f5f0e8;
+      --hueso-dim: #b8b0a4;
+      --brasa: #e8772e;
+      --rescoldo: #f0a93b;
+
+      --fast: 0.3s;
+      --base: 0.8s;
+
+      --max: 1200px;
+      --pad-x: clamp(1.25rem, 5vw, 4rem);
+      --pad-section: clamp(6rem, 12vh, 10rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+    /* Lenis maneja el smooth scroll; desactivar el nativo cuando esta activo */
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto; }
+
+    body {
+      background: var(--carbon);
+      color: var(--hueso);
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 { font-family: "Fraunces", Georgia, serif; line-height: 1.05; font-weight: 600; }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .wrap { max-width: var(--max); margin-inline: auto; padding-inline: var(--pad-x); }
+
+    /* Accesibilidad */
+    .skip {
+      position: absolute; left: -999px; top: 0; z-index: 1000;
+      background: var(--brasa); color: var(--carbon); padding: .75rem 1rem; border-radius: 4px;
+    }
+    .skip:focus { left: 1rem; top: 1rem; }
+    :focus-visible { outline: 2px solid var(--rescoldo); outline-offset: 3px; }
+
+    /* Barra de progreso */
+    .progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 100%;
+      transform: scaleX(0); transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--brasa), var(--rescoldo));
+      z-index: 200;
+    }
+
+    /* Nav */
+    header.nav {
+      position: fixed; inset: 0 0 auto 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem var(--pad-x);
+      transition: background var(--fast) ease, padding var(--fast) ease, backdrop-filter var(--fast) ease;
+    }
+    header.nav.scrolled {
+      background: rgba(12,10,9,.72);
+      backdrop-filter: blur(12px);
+      padding-block: .75rem;
+      border-bottom: 1px solid rgba(245,240,232,.08);
+    }
+    .brand { font-family: "Fraunces", serif; font-weight: 900; font-size: 1.35rem; letter-spacing: .02em; }
+    .brand span { color: var(--brasa); }
+    .nav-links { display: flex; gap: 2rem; font-size: .95rem; }
+    .nav-links a { color: var(--hueso-dim); transition: color var(--fast) ease; }
+    .nav-links a:hover { color: var(--hueso); }
+    .nav-cta {
+      border: 1px solid var(--brasa); color: var(--brasa);
+      padding: .5rem 1.1rem; border-radius: 999px; font-size: .9rem;
+      transition: background var(--fast) ease, color var(--fast) ease;
+    }
+    .nav-cta:hover { background: var(--brasa); color: var(--carbon); }
+    @media (max-width: 760px) { .nav-links { display: none; } }
+
+    /* Hero */
+    .hero {
+      min-height: 100svh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding-bottom: clamp(3rem, 8vh, 6rem);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(120% 80% at 70% 10%, rgba(232,119,46,.22), transparent 55%),
+        radial-gradient(90% 70% at 20% 100%, rgba(240,169,59,.12), transparent 60%),
+        var(--carbon);
+    }
+    .hero .ember {
+      position: absolute; border-radius: 50%; z-index: 0;
+      background: radial-gradient(circle, var(--rescoldo), transparent 70%);
+      filter: blur(1px); opacity: .0;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero .eyebrow {
+      text-transform: uppercase; letter-spacing: .35em; font-size: .78rem;
+      color: var(--brasa); margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 9vw, 8rem);
+      font-weight: 900; letter-spacing: -0.01em; max-width: 14ch;
+    }
+    .hero h1 .line { display: block; overflow: hidden; }
+    .hero h1 .line > span { display: block; }
+    .hero p.lead {
+      margin-top: 1.75rem; max-width: 46ch; color: var(--hueso-dim); font-size: 1.15rem;
+    }
+    .scroll-hint {
+      margin-top: 2.5rem; display: inline-flex; align-items: center; gap: .6rem;
+      font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: var(--hueso-dim);
+    }
+    .scroll-hint i { width: 1px; height: 2.5rem; background: var(--brasa); display: inline-block; transform-origin: top; }
+
+    /* Secciones */
+    section { padding-block: var(--pad-section); position: relative; }
+    .label {
+      text-transform: uppercase; letter-spacing: .3em; font-size: .75rem;
+      color: var(--brasa); margin-bottom: 1.5rem;
+    }
+    .reveal { opacity: 0; transform: translateY(40px); }
+
+    /* Filosofia */
+    .filo h2 { font-size: clamp(2rem, 5vw, 3.75rem); max-width: 18ch; }
+    .filo .cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: end; }
+    .filo .stat { font-family: "Fraunces", serif; font-size: clamp(3rem, 7vw, 5.5rem); color: var(--brasa); font-weight: 900; }
+    .filo .stat small { display: block; font-family: "Inter", sans-serif; font-size: .9rem; color: var(--hueso-dim); letter-spacing: .15em; text-transform: uppercase; margin-top: .5rem; font-weight: 500; }
+    @media (max-width: 760px) { .filo .cols { grid-template-columns: 1fr; } }
+
+    /* Carta */
+    .carta { background: var(--carbon-2); }
+    .carta .head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-bottom: 3.5rem; }
+    .carta h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
+    .menu { display: grid; gap: 0; }
+    .plato {
+      display: grid; grid-template-columns: 1fr auto; gap: 1rem 2rem; align-items: baseline;
+      padding: 1.5rem 0; border-top: 1px solid rgba(245,240,232,.1);
+    }
+    .plato:last-child { border-bottom: 1px solid rgba(245,240,232,.1); }
+    .plato h3 { font-size: 1.4rem; font-weight: 600; }
+    .plato .desc { grid-column: 1 / 2; color: var(--hueso-dim); font-size: .98rem; margin-top: .3rem; }
+    .plato .price { font-family: "Fraunces", serif; font-size: 1.3rem; color: var(--rescoldo); white-space: nowrap; }
+    .menu-deg {
+      margin-top: 3rem; padding: 2rem; border: 1px solid var(--brasa); border-radius: 8px;
+      display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap;
+    }
+    .menu-deg strong { font-family: "Fraunces", serif; font-size: 1.5rem; }
+
+    /* Galeria */
+    .galeria .grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 220px; gap: 1rem;
+    }
+    .galeria .tile {
+      border-radius: 8px; overflow: hidden; position: relative;
+      background: linear-gradient(135deg, #1c1714, #2a211b);
+    }
+    .galeria .tile::after {
+      content: attr(data-cap); position: absolute; left: 1rem; bottom: 1rem;
+      font-size: .85rem; color: var(--hueso-dim); letter-spacing: .05em;
+    }
+    .galeria .tile.tall { grid-row: span 2; }
+    .galeria .tile .glow {
+      position: absolute; inset: 0;
+      background: radial-gradient(80% 80% at 30% 20%, rgba(232,119,46,.25), transparent 60%);
+    }
+    @media (max-width: 760px) {
+      .galeria .grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 160px; }
+      .galeria .tile.tall { grid-row: span 1; }
+    }
+
+    /* Testimonios */
+    .testi .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .testi blockquote {
+      background: var(--carbon-2); border: 1px solid rgba(245,240,232,.08);
+      border-radius: 8px; padding: 2rem; font-size: 1.05rem;
+    }
+    .testi blockquote .stars { color: var(--rescoldo); letter-spacing: .2em; margin-bottom: 1rem; }
+    .testi cite { display: block; margin-top: 1.25rem; color: var(--hueso-dim); font-style: normal; font-size: .9rem; }
+    @media (max-width: 760px) { .testi .row { grid-template-columns: 1fr; } }
+
+    /* Reserva CTA */
+    .reserva { text-align: center; }
+    .reserva h2 { font-size: clamp(2.5rem, 7vw, 5rem); max-width: 16ch; margin-inline: auto; }
+    .btn-brasa {
+      display: inline-block; margin-top: 2.5rem;
+      background: var(--brasa); color: var(--carbon); font-weight: 500;
+      padding: 1rem 2.5rem; border-radius: 999px; font-size: 1.05rem;
+      position: relative; transition: transform var(--fast) ease;
+      box-shadow: 0 0 0 0 rgba(232,119,46,.5);
+    }
+    .btn-brasa:hover { transform: translateY(-2px); box-shadow: 0 0 40px 0 rgba(232,119,46,.45); }
+    .reserva .meta { margin-top: 2rem; color: var(--hueso-dim); font-size: .95rem; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(245,240,232,.1);
+      padding-block: 4rem 2.5rem; color: var(--hueso-dim);
+    }
+    footer .cols { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2rem; }
+    footer h4 { font-family: "Inter", sans-serif; text-transform: uppercase; letter-spacing: .15em; font-size: .78rem; color: var(--hueso); margin-bottom: 1rem; }
+    footer .brand { font-size: 1.6rem; color: var(--hueso); }
+    footer a:hover { color: var(--brasa); }
+    footer .legal { margin-top: 3rem; font-size: .8rem; opacity: .7; }
+    @media (max-width: 760px) { footer .cols { grid-template-columns: 1fr; } }
+
+    /* Cursor personalizado (se activa via JS solo en punteros finos) */
+    body.has-cursor { cursor: none; }
+    body.has-cursor a, body.has-cursor button, body.has-cursor [data-reserva] { cursor: none; }
+    .cursor-dot {
+      position: fixed; top: 0; left: 0; z-index: 1000;
+      width: 10px; height: 10px; border-radius: 50%;
+      border: 1px solid var(--brasa); background: transparent;
+      transform: translate3d(-50%, -50%, 0); pointer-events: none;
+      will-change: transform;
+    }
+
+    /* Formulario de contacto */
+    .contacto { text-align: center; }
+    .contacto h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
+    .contact-form { max-width: 560px; margin-inline: auto; margin-top: 3rem; display: grid; gap: 1.5rem; text-align: left; }
+    .form-group { display: grid; gap: .5rem; }
+    .form-group label { font-size: .88rem; letter-spacing: .08em; text-transform: uppercase; color: var(--hueso-dim); }
+    .form-group input, .form-group textarea {
+      background: var(--carbon-2); border: 1px solid rgba(245,240,232,.15);
+      color: var(--hueso); padding: .85rem 1rem; border-radius: 6px;
+      font-family: "Inter", sans-serif; font-size: 1rem; width: 100%;
+      transition: border-color var(--fast) ease;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--brasa); outline: none; }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-check { display: flex; gap: .75rem; align-items: flex-start; font-size: .9rem; color: var(--hueso-dim); line-height: 1.5; }
+    .form-check input[type="checkbox"] { width: 1.1rem; height: 1.1rem; margin-top: .2rem; accent-color: var(--brasa); flex-shrink: 0; }
+    .contact-form .btn-brasa { border: none; cursor: pointer; font-family: "Inter", sans-serif; width: fit-content; }
+
+    /* Reduce motion: contenido visible y estatico */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .hero h1 .line > span, .hero .eyebrow, .hero p.lead, .hero .scroll-hint { opacity: 1 !important; transform: none !important; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a class="brand" href="#">Brasa<span>.</span>Norte</a>
+    <nav class="nav-links" aria-label="Principal">
+      <a href="#filosofia">Filosofia</a>
+      <a href="#carta">Carta</a>
+      <a href="#galeria">Galeria</a>
+      <a href="#testimonios">Reseñas</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <a class="nav-cta" href="#reserva">Reservar</a>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" aria-label="Portada">
+      <div class="wrap hero-inner">
+        <p class="eyebrow">Brasa de autor · Gijon</p>
+        <h1 aria-label="El fuego como punto de partida">
+          <span class="line"><span>El fuego como</span></span>
+          <span class="line"><span>punto de partida</span></span>
+        </h1>
+        <p class="lead">Producto de temporada cocinado a la brasa. Sin atajos, sin ruido. Solo el rescoldo, el tiempo y lo que da el norte.</p>
+        <span class="scroll-hint"><i></i> Desliza</span>
+      </div>
+    </section>
+
+    <!-- FILOSOFIA -->
+    <section class="filo" id="filosofia">
+      <div class="wrap">
+        <p class="label reveal">Filosofia</p>
+        <div class="cols">
+          <h2 class="reveal">Cocinamos con lo que hay, cuando lo hay. La brasa decide el resto.</h2>
+          <div class="reveal">
+            <div class="stat" data-count="2016">2016<small>Encendimos la parrilla</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARTA -->
+    <section class="carta" id="carta">
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <p class="label reveal">Carta de temporada</p>
+            <h2 class="reveal">Otono</h2>
+          </div>
+          <p class="reveal" style="max-width:32ch;color:var(--hueso-dim)">La carta cambia con el mercado. Estos son los platos de esta semana.</p>
+        </div>
+
+        <div class="menu">
+          <article class="plato reveal">
+            <h3>Pulpo a la brasa</h3>
+            <span class="price">24 €</span>
+            <p class="desc">Pulpo del Cantabrico, pimenton de la Vera, cremoso de patata ahumada.</p>
+          </article>
+          <article class="plato reveal">
+            <h3>Cebolla entera al rescoldo</h3>
+            <span class="price">14 €</span>
+            <p class="desc">Cocida 4 horas entre brasas, manteca avellana, queso curado de Asturias.</p>
+          </article>
+          <article class="plato reveal">
+            <h3>Lomo de vaca madurada</h3>
+            <span class="price">32 €</span>
+            <p class="desc">45 dias de maduracion, sal en escamas, jugo de sus huesos.</p>
+          </article>
+          <article class="plato reveal">
+            <h3>Setas de temporada</h3>
+            <span class="price">19 €</span>
+            <p class="desc">Boletus y senderuelas a la parrilla, yema curada, aceite de perejil.</p>
+          </article>
+          <article class="plato reveal">
+            <h3>Merluza de pincho</h3>
+            <span class="price">26 €</span>
+            <p class="desc">Lomo a la brasa, pil-pil ligero de sus espinas, alga codium.</p>
+          </article>
+          <article class="plato reveal">
+            <h3>Torrija de brioche</h3>
+            <span class="price">9 €</span>
+            <p class="desc">Caramelizada al momento, helado de leche tostada.</p>
+          </article>
+        </div>
+
+        <div class="menu-deg reveal">
+          <div>
+            <strong>Menu degustacion</strong>
+            <p style="color:var(--hueso-dim)">Siete pases. Lo mejor del dia, elige el equipo.</p>
+          </div>
+          <span class="price" style="font-family:Fraunces,serif;font-size:1.8rem;color:var(--rescoldo)">68 €</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIA -->
+    <section class="galeria" id="galeria">
+      <div class="wrap">
+        <p class="label reveal">El local</p>
+        <div class="grid">
+          <div class="tile tall reveal" data-cap="La parrilla"><div class="glow"></div></div>
+          <div class="tile reveal" data-cap="Sala"><div class="glow"></div></div>
+          <div class="tile reveal" data-cap="Brasa viva"><div class="glow"></div></div>
+          <div class="tile reveal" data-cap="Producto"><div class="glow"></div></div>
+          <div class="tile tall reveal" data-cap="Barra"><div class="glow"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section class="testi" id="testimonios">
+      <div class="wrap">
+        <p class="label reveal">Lo que dicen</p>
+        <div class="row">
+          <blockquote class="reveal">
+            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
+            La cebolla al rescoldo es de las mejores cosas que he comido este año. Trato impecable.
+            <cite>— Marta R., octubre 2025</cite>
+          </blockquote>
+          <blockquote class="reveal">
+            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
+            Producto altisimo y punto de brasa perfecto. El menu degustacion vale cada euro.
+            <cite>— Diego F., septiembre 2025</cite>
+          </blockquote>
+          <blockquote class="reveal">
+            <div class="stars" aria-label="5 de 5 estrellas">★★★★★</div>
+            Ambiente cuidado y cocina honesta. Repetiremos seguro.
+            <cite>— Lucia P., septiembre 2025</cite>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="contacto" id="contacto">
+      <div class="wrap">
+        <p class="label reveal" style="text-align:center">Contacto</p>
+        <h2 class="reveal">¿Tienes una pregunta?</h2>
+        <!-- PENDIENTE: sustituir action por el endpoint real de Formspree (https://formspree.io/f/[ID]) -->
+        <form class="contact-form reveal" action="#" method="POST" novalidate data-contact-form>
+          <!-- Honeypot anti-spam: oculto para humanos, visible para bots -->
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="form-group">
+            <label for="cf-name">Nombre</label>
+            <input type="text" id="cf-name" name="name" required autocomplete="name" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label for="cf-email">Email</label>
+            <input type="email" id="cf-email" name="email" required autocomplete="email" placeholder="tu@email.com">
+          </div>
+          <div class="form-group">
+            <label for="cf-msg">Mensaje</label>
+            <textarea id="cf-msg" name="message" required rows="4" placeholder="Escribe tu mensaje..."></textarea>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="cf-rgpd" name="rgpd" required>
+            <label for="cf-rgpd">He leido y acepto la <a href="#" style="color:var(--brasa)">politica de privacidad</a> [PENDIENTE]. Consiento el tratamiento de mis datos (nombre y email) para atender mi consulta, de acuerdo con el RGPD y la LOPDGDD.</label>
+          </div>
+          <button type="submit" class="btn-brasa">Enviar mensaje</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- RESERVA -->
+    <section class="reserva" id="reserva">
+      <div class="wrap">
+        <p class="label reveal" style="text-align:center">Reserva</p>
+        <h2 class="reveal">Una mesa junto a la brasa te espera</h2>
+        <!-- PENDIENTE: sustituir href por la URL del sistema de reservas externo -->
+        <a class="btn-brasa reveal" href="#" data-reserva>Reservar mesa</a>
+        <p class="meta reveal">Mar a Dom · 13:30-15:30 y 20:30-23:00 · Gijon, Asturias · +34 600 000 000</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="cols">
+        <div>
+          <p class="brand">Brasa<span style="color:var(--brasa)">.</span>Norte</p>
+          <p style="margin-top:1rem;max-width:30ch">Brasa de autor con producto de temporada. Gijon, Asturias.</p>
+        </div>
+        <div>
+          <h4>Visitanos</h4>
+          <p>Calle Ejemplo, 12<br>33201 Gijon</p>
+          <p style="margin-top:.5rem">+34 600 000 000</p>
+        </div>
+        <div>
+          <h4>Sigue</h4>
+          <p><a href="https://instagram.com" rel="noopener">Instagram</a></p>
+          <p><a href="#carta">Carta</a></p>
+          <p><a href="#reserva">Reservar</a></p>
+        </div>
+      </div>
+      <p class="legal">© 2025 Brasa Norte. [PENDIENTE: razon social] · Aviso legal · Politica de privacidad</p>
+    </div>
+  </footer>
+
+  <!-- Librerias (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+  <script>
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // --- Nav: fondo al hacer scroll ---
+    const nav = document.querySelector("header.nav");
+    const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    if (!reduce && window.gsap) {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // --- Lenis smooth scroll integrado con ScrollTrigger ---
+      let lenis;
+      if (window.Lenis) {
+        lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add((t) => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+      }
+
+      // --- Barra de progreso ---
+      gsap.to(".progress", {
+        scaleX: 1, ease: "none",
+        scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.3 }
+      });
+
+      // --- Hero: reveal por lineas ---
+      const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+      tl.from(".hero h1 .line > span", { yPercent: 110, duration: 1.2, stagger: 0.12 })
+        .from(".hero .eyebrow", { y: 20, opacity: 0, duration: 0.8 }, 0.2)
+        .from(".hero p.lead", { y: 24, opacity: 0, duration: 0.9 }, 0.5)
+        .from(".hero .scroll-hint", { opacity: 0, duration: 0.8 }, 0.8);
+
+      // pulso del indicador de scroll
+      gsap.to(".scroll-hint i", { scaleY: 0.4, transformOrigin: "top", duration: 0.9, repeat: -1, yoyo: true, ease: "power1.inOut" });
+
+      // --- Reveal genrico de secciones ---
+      gsap.utils.toArray(".reveal").forEach((el) => {
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 85%" }
+        });
+      });
+
+      // --- Contador del año de fundacion ---
+      const stat = document.querySelector(".stat[data-count]");
+      if (stat) {
+        const end = +stat.dataset.count;
+        const obj = { v: end - 24 };
+        const node = stat.firstChild;
+        ScrollTrigger.create({
+          trigger: stat, start: "top 80%", once: true,
+          onEnter: () => gsap.to(obj, {
+            v: end, duration: 1.6, ease: "power2.out",
+            onUpdate: () => { node.textContent = Math.round(obj.v); }
+          })
+        });
+      }
+
+      // --- Parallax sutil en tiles de galeria ---
+      gsap.utils.toArray(".galeria .tile").forEach((tile) => {
+        gsap.to(tile.querySelector(".glow"), {
+          yPercent: 15, ease: "none",
+          scrollTrigger: { trigger: tile, start: "top bottom", end: "bottom top", scrub: true }
+        });
+      });
+
+      // --- Cursor personalizado (solo en punteros finos: raton/trackpad) ---
+      const finePointer = !window.matchMedia("(pointer: coarse)").matches;
+      if (finePointer) {
+        const dot = document.createElement("div");
+        dot.className = "cursor-dot";
+        dot.setAttribute("aria-hidden", "true");
+        document.body.appendChild(dot);
+        document.body.classList.add("has-cursor");
+
+        // quickTo: seguimiento suave con lag (solo transform)
+        const xTo = gsap.quickTo(dot, "x", { duration: 0.35, ease: "power3.out" });
+        const yTo = gsap.quickTo(dot, "y", { duration: 0.35, ease: "power3.out" });
+        const scaleTo = gsap.quickTo(dot, "scale", { duration: 0.3, ease: "power3.out" });
+
+        window.addEventListener("pointermove", (e) => {
+          xTo(e.clientX);
+          yTo(e.clientY);
+        }, { passive: true });
+
+        // hover sobre interactivos: escala 2.5x + relleno brasa 20%
+        const hoverTargets = document.querySelectorAll("a, button, [data-reserva]");
+        hoverTargets.forEach((el) => {
+          el.addEventListener("pointerenter", () => {
+            scaleTo(2.5);
+            gsap.to(dot, { backgroundColor: "rgba(232,119,46,0.2)", duration: 0.3 });
+          });
+          el.addEventListener("pointerleave", () => {
+            scaleTo(1);
+            gsap.to(dot, { backgroundColor: "rgba(232,119,46,0)", duration: 0.3 });
+          });
+        });
+      }
+
+      // --- Magnetic buttons (.nav-cta y .btn-brasa) ---
+      const MAGNET_RADIUS = 80;
+      document.querySelectorAll(".nav-cta, .btn-brasa").forEach((btn) => {
+        btn.addEventListener("pointermove", (e) => {
+          const rect = btn.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = e.clientX - cx;
+          const dy = e.clientY - cy;
+          if (Math.hypot(dx, dy) < MAGNET_RADIUS + Math.max(rect.width, rect.height) / 2) {
+            gsap.to(btn, { x: dx * 0.4, y: dy * 0.4, duration: 0.4, ease: "power2.out" });
+          }
+        });
+        btn.addEventListener("pointerleave", () => {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: "power2.out" });
+        });
+      });
+
+      // --- Ember particles en el hero ---
+      const hero = document.querySelector(".hero");
+      if (hero) {
+        const count = gsap.utils.random(8, 12, 1);
+        for (let i = 0; i < count; i++) {
+          const ember = document.createElement("span");
+          ember.className = "ember";
+          ember.setAttribute("aria-hidden", "true");
+          const size = gsap.utils.random(4, 18);
+          ember.style.width = size + "px";
+          ember.style.height = size + "px";
+          ember.style.left = gsap.utils.random(0, 100) + "%";
+          ember.style.bottom = gsap.utils.random(-5, 60) + "%";
+          ember.style.willChange = "transform, opacity";
+          hero.appendChild(ember);
+
+          gsap.to(ember, {
+            yPercent: -120,
+            opacity: 0.6,
+            duration: gsap.utils.random(3, 7),
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            delay: i * 0.4
+          });
+        }
+      }
+    }
+
+    // --- Formulario de contacto: demo mode ---
+    document.querySelector("[data-contact-form]")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      alert("Demo: aqui se enviaria el formulario a Formspree. Sustituye action='#' por el endpoint real.");
+      form.reset();
+    });
+
+    // --- CTA reserva: aviso si el enlace aun es placeholder ---
+    document.querySelector("[data-reserva]")?.addEventListener("click", (e) => {
+      const a = e.currentTarget;
+      if (a.getAttribute("href") === "#") {
+        e.preventDefault();
+        alert("Demo: aqui se enlaza el sistema de reservas externo del cliente.");
+      }
+    });
+  </script>
+</body>
+</html>

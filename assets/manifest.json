@@ -1,0 +1,89 @@
+{
+  "_info": "Sistema de sustitucion de assets. estado: pending=placeholder CSS, stock=imagen de demo, ready=asset real del cliente. Para produccion: todos los assets deben estar en estado 'ready'.",
+  "assets": [
+    {
+      "id": "hero-bg",
+      "rol": "Fondo del hero — parrilla encendida, ambiente de noche",
+      "estado": "pending",
+      "src": null,
+      "stock": null,
+      "prompt": "Pendiente — usar skill ai-media-studio para generar el prompt cinematico (sujeto: llamas de parrilla en primer plano, fondo cocina de autor en penumbra; lente: 35mm, bokeh suave; paleta: negro carbon, naranja brasa, ambar rescoldo; ratio: 16:9, formato: webp)",
+      "ratio": "16:9",
+      "formato": "webp",
+      "peso_max_kb": 200,
+      "alt": "Parrilla encendida en Brasa Norte, Gijon"
+    },
+    {
+      "id": "galeria-parrilla",
+      "rol": "Tile principal de galeria (columna tall) — vista de la parrilla completa",
+      "estado": "pending",
+      "src": null,
+      "stock": null,
+      "prompt": "Pendiente — ai-media-studio",
+      "ratio": "2:3",
+      "formato": "webp",
+      "peso_max_kb": 120,
+      "alt": "La parrilla de Brasa Norte"
+    },
+    {
+      "id": "galeria-sala",
+      "rol": "Tile galeria — sala del restaurante con iluminacion calida",
+      "estado": "pending",
+      "src": null,
+      "stock": null,
+      "prompt": "Pendiente — ai-media-studio",
+      "ratio": "4:3",
+      "formato": "webp",
+      "peso_max_kb": 100,
+      "alt": "Sala de Brasa Norte"
+    },
+    {
+      "id": "galeria-brasa",
+      "rol": "Tile galeria — detalle de brasas vivas, close-up",
+      "estado": "pending",
+      "src": null,
+      "stock": null,
+      "prompt": "Pendiente — ai-media-studio",
+      "ratio": "4:3",
+      "formato": "webp",
+      "peso_max_kb": 100,
+      "alt": "Brasa viva en Brasa Norte"
+    },
+    {
+      "id": "galeria-producto",
+      "rol": "Tile galeria — plato emblematico (pulpo o lomo) con emplatado de autor",
+      "estado": "pending",
+      "src": null,
+      "stock": null,
+      "prompt": "Pendiente — ai-media-studio",
+      "ratio": "4:3",
+      "formato": "webp",
+      "peso_max_kb": 100,
+      "alt": "Plato de temporada de Brasa Norte"
+    },
+    {
+      "id": "galeria-barra",
+      "rol": "Tile galeria (tall) — barra y bodega, botellero de fondo",
+      "estado": "pending",
+      "src": null,
+      "stock": null,
+      "prompt": "Pendiente — ai-media-studio",
+      "ratio": "2:3",
+      "formato": "webp",
+      "peso_max_kb": 120,
+      "alt": "Barra de Brasa Norte"
+    },
+    {
+      "id": "video-parrilla",
+      "rol": "Video loop del hero — parrilla encendida, 8 segundos, sin audio",
+      "estado": "pending",
+      "src": null,
+      "poster": null,
+      "prompt": "Pendiente — ai-media-studio (image-to-video desde galeria-brasa; duracion 8s, loop seamless, sin camara shake, solo el juego de llamas)",
+      "duracion_s": 8,
+      "formato": "mp4 (H.264 + fallback webm)",
+      "peso_max_mb": 3,
+      "alt": "Parrilla encendida en Brasa Norte"
+    }
+  ]
+}
