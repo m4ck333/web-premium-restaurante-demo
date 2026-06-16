@@ -261,6 +261,11 @@
     .form-check { display: flex; gap: .75rem; align-items: flex-start; font-size: .9rem; color: var(--hueso-dim); line-height: 1.5; }
     .form-check input[type="checkbox"] { width: 1.1rem; height: 1.1rem; margin-top: .2rem; accent-color: var(--brasa); flex-shrink: 0; }
     .contact-form .btn-brasa { border: none; cursor: pointer; font-family: "Inter", sans-serif; width: fit-content; }
+    .field-error { font-size: .82rem; color: #ff6b5e; min-height: 1em; }
+    .form-status { font-size: .92rem; min-height: 1.2em; margin: 0; }
+    .form-status[data-state="enviando"] { color: var(--hueso-dim); }
+    .form-status[data-state="exito"] { color: #6bd49a; }
+    .form-status[data-state="error"] { color: #ff6b5e; }
 
     /* Reduce motion: contenido visible y estatico */
     @media (prefers-reduced-motion: reduce) {
@@ -409,27 +414,33 @@
       <div class="wrap">
         <p class="label reveal" style="text-align:center">Contacto</p>
         <h2 class="reveal">¿Tienes una pregunta?</h2>
-        <!-- PENDIENTE: sustituir action por el endpoint real de Formspree (https://formspree.io/f/[ID]) -->
-        <form class="contact-form reveal" action="#" method="POST" novalidate data-contact-form>
-          <!-- Honeypot anti-spam: oculto para humanos, visible para bots -->
-          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <!-- Conectado al backend real (piloto A1): Edge Function crear-reserva (Supabase) -->
+        <!-- action="#" es el fallback no-JS (el endpoint solo acepta JSON); el envio lo hace reserva-form.js -->
+        <form class="contact-form reveal" action="#" method="POST" novalidate
+              data-reserva-form data-origen="brasa-norte" data-tipo="lead">
+          <!-- Honeypot anti-spam (nombre 'website', lo que espera el backend): oculto para humanos, los bots lo rellenan -->
+          <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-group">
             <label for="cf-name">Nombre</label>
-            <input type="text" id="cf-name" name="name" required autocomplete="name" placeholder="Tu nombre">
+            <input type="text" id="cf-name" name="nombre" required autocomplete="name" placeholder="Tu nombre">
+            <span class="field-error" data-error-for="nombre" aria-live="polite"></span>
           </div>
           <div class="form-group">
             <label for="cf-email">Email</label>
             <input type="email" id="cf-email" name="email" required autocomplete="email" placeholder="tu@email.com">
+            <span class="field-error" data-error-for="email" aria-live="polite"></span>
           </div>
           <div class="form-group">
             <label for="cf-msg">Mensaje</label>
-            <textarea id="cf-msg" name="message" required rows="4" placeholder="Escribe tu mensaje..."></textarea>
+            <textarea id="cf-msg" name="mensaje" required rows="4" placeholder="Escribe tu mensaje..."></textarea>
+            <span class="field-error" data-error-for="mensaje" aria-live="polite"></span>
           </div>
           <div class="form-check">
             <input type="checkbox" id="cf-rgpd" name="rgpd" required>
             <label for="cf-rgpd">He leido y acepto la <a href="#" style="color:var(--brasa)">politica de privacidad</a> [PENDIENTE]. Consiento el tratamiento de mis datos (nombre y email) para atender mi consulta, de acuerdo con el RGPD y la LOPDGDD.</label>
           </div>
           <button type="submit" class="btn-brasa">Enviar mensaje</button>
+          <p class="form-status" data-reserva-status role="status" aria-live="polite"></p>
         </form>
       </div>
     </section>
@@ -630,14 +641,10 @@
       });
     }
 
-    // --- Formulario de contacto: demo mode ---
-    document.querySelector("[data-contact-form]")?.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const form = e.currentTarget;
-      if (!form.checkValidity()) { form.reportValidity(); return; }
-      alert("Demo: aqui se enviaria el formulario a Formspree. Sustituye action='#' por el endpoint real.");
-      form.reset();
-    });
+    // --- Formulario de contacto: conectado al backend real (piloto A1) via reserva-form.js ---
+    // El envio lo gestiona reserva-form.js (cargado abajo con defer). La validacion nativa
+    // (campos required + type=email + checkbox RGPD) se ejecuta ANTES del handler de submit;
+    // solo si pasa, reserva-form.js hace el POST a la Edge Function crear-reserva.
 
     // --- CTA reserva: aviso si el enlace aun es placeholder ---
     document.querySelector("[data-reserva]")?.addEventListener("click", (e) => {
@@ -648,5 +655,8 @@
       }
     });
   </script>
+
+  <!-- Conexion del formulario de contacto con el backend real (piloto A1, Supabase Edge Function) -->
+  <script src="reserva-form.js" defer></script>
 </body>
 </html>
